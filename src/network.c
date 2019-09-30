@@ -585,6 +585,40 @@ float *network_predict_image(network *net, image im)
     return p;
 }
 
+
+//detection *get_network_boxes(network *net, int w, int h, float thresh, float hier, int *map, int relative, int *num)
+//{
+//    detection *dets = make_network_boxes(net, thresh, num);
+//    fill_network_boxes(net, w, h, thresh, hier, map, relative, dets);
+//    return dets;
+//}
+
+
+/*
+ * net 模型
+ * classes 分类个数，self.meta.classes
+ * filename  文件地址
+ * map python传递none
+ */
+detection *network_predict_image_gt(network *net, int classes, char *filename, float thresh, float hier, float nms, int relative, int *num)
+{
+    //image load_image_color(char *filename, int w, int h);
+    // 加载图片
+    image im = load_image_color(filename, 0, 0);
+    //预测，返回指针p不使用
+    //    float *p =network_predict_image(net,im);
+    network_predict_image(net,im);
+    // 释放图片
+    free_image(im);
+    // detection *get_network_boxes(network *net, int w, int h, float thresh, float hier, int *map, int relative, int *num)
+    // 标注框处理, map传递空  relative 为0
+    detection *dets = get_network_boxes(net, im.w, im.h, thresh, hier, 0, relative, num);
+    if(nms) do_nms_obj(dets, num[0], classes, nms);
+
+    //free_detections 暂时放到外面
+    return dets;
+}
+
 int network_width(network *net){return net->w;}
 int network_height(network *net){return net->h;}
 

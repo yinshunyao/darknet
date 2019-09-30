@@ -742,6 +742,9 @@ float *network_predict(network *net, float *input);
 int network_width(network *net);
 int network_height(network *net);
 float *network_predict_image(network *net, image im);
+// predict with open img and clear
+detection *network_predict_image_gt(network *net, int classes, char *filename, float thresh, float hier, float nms, int relative, int *num);
+
 void network_detect(network *net, image im, float thresh, float hier_thresh, float nms, detection *dets);
 detection *get_network_boxes(network *net, int w, int h, float thresh, float hier, int *map, int relative, int *num);
 void free_detections(detection *dets, int n);
